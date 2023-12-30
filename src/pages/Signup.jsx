@@ -5,6 +5,7 @@ import { FaEye } from "react-icons/fa6";
 import {getAuth,createUserWithEmailAndPassword,updateProfile} from 'firebase/auth'
 import {db} from '../firebase.config'
 import {doc,setDoc,serverTimestamp} from 'firebase/firestore'
+import { toast } from "react-toastify";
 const Signup = () => {
  const [showPassword,hidePassword]=useState(false)
   const [formData, setFormData] = useState({
@@ -43,12 +44,14 @@ const formDataCopy={...formData}
 delete formDataCopy.password;
 formDataCopy.timestamp=serverTimestamp()
 await setDoc(doc(db,'users',user.uid),formDataCopy)
+toast.success(`successfully SignUp`)
       navigate('/')
 
-      alert('sign up success')
+
       
     } catch (error) {
       console.log(error);
+      toast.error('something went wrong')
       
     }
 

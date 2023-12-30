@@ -3,6 +3,7 @@ import Layout from "../components/Layout/Layout";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaEye } from "react-icons/fa6";
 import {getAuth,signInWithEmailAndPassword} from 'firebase/auth'
+import { toast } from "react-toastify";
 const SignIn = () => {
   const [showPassword, hidePassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,10 +29,12 @@ const SignIn = () => {
       const auth=getAuth()
       const userCredential=await signInWithEmailAndPassword(auth,email,password)
       if(userCredential.user){
+        toast.success(`successfull SignIn`)
         navigate('/')
       }
     } catch (error) {
       console.log(error);
+      toast.error('Invalid Credential')
     }
   }
   return (
