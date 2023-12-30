@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaEye } from "react-icons/fa6";
 import {getAuth,signInWithEmailAndPassword} from 'firebase/auth'
 import { toast } from "react-toastify";
+import OAuth from "../components/OAuth";
 const SignIn = () => {
   const [showPassword, hidePassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -63,7 +64,7 @@ const SignIn = () => {
               onChange={onChange}
             />
             <span>
-              show pass
+              show password
               <FaEye
                 className="ms-2 text-danger"
                 style={{ cursor: "pointer" }}
@@ -71,12 +72,15 @@ const SignIn = () => {
                   hidePassword((prev) => !prev);
                 }}
               />{" "}
+              <Link to={'/forgot-password'}>Forgot Password</Link>
             </span>
           </div>
 
           <button type="submit" className="btn btn-primary">
             Sign In
           </button>
+
+          <OAuth/>
           <div className="mt-2">
        
             <span>
