@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import {db} from '../firebase.config'
 import {FaEdit} from 'react-icons/fa'
 import { MdOutlineDoneOutline } from "react-icons/md";
+import {doc,setDoc, updateDoc} from 'firebase/firestore'
 
 const Profile = () => {
     const auth=getAuth()
@@ -27,10 +28,37 @@ const Profile = () => {
         navigate('/')
     }
 
+    // on change 
+
+    const onChange=(e)=>{
+      setFormData(prevState=>({
+        ...prevState,
+        [e.target.id]:e.target.value
+      }))
+    }
+
     // submit Handler
 
-    const onsubmit=()=>{
-        console.log('cliked ');
+    const onSubmit=async()=>{
+      
+
+      try {
+
+        if(auth.currentUser.displayName!==name ){
+          await updateProfile(auth.currentUser,{
+            displayName:name
+          })
+          const userRef=doc(db,'users',auth.currentUser.uid);
+        
+          await updateDoc(userRef,{name})
+          toast.success('User Updated')
+        }
+
+      } catch (error) {
+        console.log(error);
+        toast.error('Somthing Went Wrong')
+        
+      }
     }
 
   return (
@@ -45,13 +73,29 @@ const Profile = () => {
    <div className="d-flex justify-content-between">
    <p>User Personal Details</p>
    <span style={{cursor:'pointer'  }}
-   onClick={()=>{changedetails && onsubmit(); setChangeDetails(prevState=>!prevState)}}
+   onClick={()=>{
+    changedetails && onSubmit(); 
+    setChangeDetails(prevState=>!prevState)}}
    >
    {changedetails? <MdOutlineDoneOutline color='green'/> :  <FaEdit color='red'/> }
    </span>
    </div>
    </div>
   <div className="card-body">
+  <form>
+
+  <div className="mb-3">
+    <label htmlFor="name" className="form-label">Name</label>
+    <input type="text" className="form-control" id="name" value={name} onChange={onChange} disabled={!changedetails} />
+  </div>
+  <div className="mb-3">
+    <label htmlFor="email" className="form-label">Email address</label>
+    <input type="email" className="form-control" id="email"  value={email} disabled={!changedetails}  />
+  </div>
+  
+ 
+</form>
+
    
   </div>
 </div>
